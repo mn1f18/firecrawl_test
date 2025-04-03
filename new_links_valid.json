@@ -1,0 +1,146 @@
+{
+  "2025-04-03 11:58:17": {
+    "batch_id": "batch_20250403115655",
+    "timestamp": "2025-04-03 11:58:17",
+    "results": {
+      "https://tardaguila.uy/ganaderia": {
+        "note": "乌拉圭农业网站",
+        "source": 1,
+        "validated_links": [
+          {
+            "url": "https://tardaguila.uy/component/banners/click/48",
+            "validation": {
+              "score": 20,
+              "is_valid": false,
+              "reason": "URL 路径 (/component/banners/click/48) 显示该链接指向的是一个广告横幅点击计数器，而非具体新闻文章。此外，链接文本缺失，无法判断其是否为农业新闻标题。因此，此链接不符合有效农业新闻链接的特征。"
+            }
+          },
+          {
+            "url": "https://tardaguila.uy/component/banners/click/54",
+            "validation": {
+              "score": 20,
+              "is_valid": false,
+              "reason": "URL 路径 (/component/banners/click/54) 显示该链接指向的是一个广告点击计数器，而非具体新闻文章。此外，链接文本缺失，无法判断其是否为描述性强的新闻标题。因此不符合有效农业新闻链接的特征。"
+            }
+          },
+          {
+            "url": "https://tardaguila.uy/lecheria/poder-de-compra-de-la-leche-en-maximo-desde-mayo-de-2024",
+            "validation": {
+              "score": 85,
+              "is_valid": true,
+              "reason": "URL 路径包含具体主题 '/lecheria/poder-de-compra-de-la-leche-en-maximo-desde-mayo-de-2024'，与农业（乳制品）相关，且链接文本指向特定新闻文章而非泛用性描述。虽然路径中没有明确日期或文章 ID，但内容主题和结构符合农业新闻特征。"
+            }
+          },
+          {
+            "url": "https://tardaguila.uy/lecheria/calcar-baja-la-cortina-a-su-produccion-industrial-en-uruguay",
+            "validation": {
+              "score": 85,
+              "is_valid": true,
+              "reason": "链接路径包含具体的新闻文章标题 'calcar-baja-la-cortina-a-su-produccion-industrial-en-uruguay'，且与农业相关（乳制品生产）。虽然路径中没有日期或明确的文章ID，但链接文本和URL表明这是一个特定的新闻文章，而非主页或栏目页。因此判断为有效农业新闻链接。"
+            }
+          }
+        ],
+        "original_timestamp": "2025-04-03 11:56:55"
+      },
+      "https://blasinayasociados.com/ganaderia/": {
+        "note": "乌拉圭牛肉资讯",
+        "source": 2,
+        "validated_links": [
+          {
+            "url": "https://blasinayasociados.com/caen-las-ventas-de-carne-vacuna-de-eeuu-a-china-despues-de-que-beijing-dejara-expirar-los-registros-de-exportacion/",
+            "validation": {
+              "score": 85,
+              "is_valid": true,
+              "reason": "链接路径包含具体新闻标题，描述了美国牛肉对中国的出口情况，与农业和国际贸易相关。虽然URL中未明确显示日期或文章ID，但内容符合农业新闻特征，且链接文本具有新闻标题的简洁性和描述性。因此判断为有效农业新闻链接。"
+            }
+          },
+          {
+            "url": "https://blasinayasociados.com/frigorificos-piden-importar-ganado-en-pie-aru-lo-ve-inviable/",
+            "validation": {
+              "score": 75,
+              "is_valid": true,
+              "reason": "链接路径包含具体文章标题 '/frigorificos-piden-importar-ganado-en-pie-aru-lo-ve-inviable/'，且链接文本符合新闻标题的特征。然而，URL 中缺少日期或明确的文章标识符，因此无法完全确认其指向具体新闻文章。此外，内容涉及屠宰场请求进口活牛，与农业相关，符合农业新闻主题。"
+            }
+          },
+          {
+            "url": "https://blasinayasociados.com/faena-vacuna-fue-la-mas-alta-en-seis-semanas-la-ovina-volvio-a-aumentar/",
+            "validation": {
+              "score": 75,
+              "is_valid": true,
+              "reason": "链接路径包含具体新闻标题，指向一篇关于牲畜屠宰量的农业相关文章，符合农业新闻主题。但URL路径中缺少日期或明确的文章标识符，且无法完全确认是否为具体文章页面，因此部分符合特征。"
+            }
+          },
+          {
+            "url": "https://blasinayasociados.com/todos-los-bienes-de-conexion-ganadera-seran-rematados-y-se-descarta-la-posibilidad-de-un-acuerdo-con-los-acreedores/",
+            "validation": {
+              "score": 75,
+              "is_valid": true,
+              "reason": "链接路径包含具体新闻标题，描述与农业相关（涉及畜牧业资产拍卖），且没有指向非文章路径。但URL中缺少日期或明确的文章标识符，因此部分符合有效农业新闻链接的特征。"
+            }
+          },
+          {
+            "url": "https://blasinayasociados.com/faena-de-marzo-en-argentina-fue-la-mas-baja-en-38-meses/",
+            "validation": {
+              "score": 75,
+              "is_valid": true,
+              "reason": "链接路径包含具体文章标题，指向特定新闻内容，且主题与农业相关（涉及阿根廷的屠宰量数据）。然而，URL 缺乏日期或明确的文章标识符，这降低了其可信度。链接文本缺失，但根据路径可以推测为有效农业新闻。因此评分为中等偏上。"
+            }
+          },
+          {
+            "url": "https://blasinayasociados.com/el-gordo-y-la-reposicion-en-su-techo-de-precios/",
+            "validation": {
+              "score": 75,
+              "is_valid": true,
+              "reason": "链接路径包含具体文章标识符（/el-gordo-y-la-reposicion-en-su-techo-de-precios/），且链接文本看起来像是新闻标题，描述性强。然而，URL 路径中缺少日期或明确的文章 ID，这降低了可信度。此外，内容主题与农业经济相关（如价格上限和补充库存），符合农业新闻的范畴。因此评分为 75 分。"
+            }
+          },
+          {
+            "url": "https://blasinayasociados.com/?_dnlink=16749&aid=1720&t=1743641432",
+            "validation": {
+              "score": 20,
+              "is_valid": false,
+              "reason": "URL 路径仅为 '/'，未包含具体文章标识符或日期信息，且链接文本为空，无法判断其指向具体新闻文章。此外，参数部分（如 '_dnlink', 'aid', 't'）表明这可能是一个跟踪链接而非直接指向农业新闻文章。"
+            }
+          }
+        ],
+        "original_timestamp": "2025-04-03 11:56:55"
+      }
+    }
+  },
+  "2025-04-03 13:24:30": {
+    "batch_id": "batch_20250403132336",
+    "timestamp": "2025-04-03 13:24:30",
+    "results": {
+      "https://tardaguila.uy/ganaderia": {
+        "note": "乌拉圭农业网站",
+        "source": 1,
+        "validated_links": [
+          {
+            "url": "https://www.youtube.com/watch?v=K7Hswc1i9DQ&embeds_referring_euri=https%3A%2F%2Ftardaguila.uy%2F",
+            "validation": {
+              "score": 30,
+              "is_valid": false,
+              "reason": "链接指向的是 YouTube 视频页面（/watch），而非具体新闻文章。此外，没有提供明确的链接文本以判断其是否与农业新闻相关。因此不符合有效农业新闻链接的特征。"
+            }
+          }
+        ],
+        "original_timestamp": "2025-04-03 13:23:36"
+      },
+      "https://blasinayasociados.com/ganaderia/": {
+        "note": "乌拉圭牛肉资讯",
+        "source": 2,
+        "validated_links": [
+          {
+            "url": "https://blasinayasociados.com/?_dnlink=16749&aid=1720&t=1743646637",
+            "validation": {
+              "score": 20,
+              "is_valid": false,
+              "reason": "URL 路径仅为 '/'，未包含具体文章标识符或日期信息，且链接文本为空，无法判断其指向具体新闻文章。此外，参数化 URL（如 '?_dnlink=...'）通常不直接指向具体内容页，因此不符合有效农业新闻链接的特征。"
+            }
+          }
+        ],
+        "original_timestamp": "2025-04-03 13:23:36"
+      }
+    }
+  }
+}

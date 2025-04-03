@@ -4,37 +4,28 @@ import json
 import pandas as pd
 from datetime import datetime
 import time
+import os
+from read_excel import read_urls_from_excel
 
 app = FirecrawlApp(api_key=API_KEY)
 
-def load_urls_from_file(file_path):
-    """从文件中加载URL列表"""
-    urls = []
-    print(f"尝试从文件加载URL: {file_path}")
-    try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            lines = f.readlines()
-            print(f"文件中共有 {len(lines)} 行")
-            for i, line in enumerate(lines):
-                original_line = line
-                line = line.strip()
-                print(f"第 {i+1} 行: '{original_line}' -> '{line}'")
-                if line and not line.startswith('link') and line.startswith('http'):
-                    urls.append(line)
-                    print(f"  - 已添加URL: {line}")
-                else:
-                    print(f"  - 跳过行: {line}")
-    except Exception as e:
-        print(f"读取文件时出错: {str(e)}")
-    
-    return urls
-
-def extract_content_from_urls(urls):
+def extract_content_from_urls(urls, tags=None):
     """使用Firecrawl的extract功能从URL中提取内容"""
+    if tags is None:
+        tags = {}
+        
     results = {}
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     
-    for url in urls:
-        print(f"正在处理: {url}")
+    # 创建结果目录
+    results_dir = f"results_{timestamp}"
+    os.makedirs(results_dir, exist_ok=True)
+    
+    for i, url in enumerate(urls):
+        print(f"\n[{i+1}/{len(urls)}] 正在处理: {url}")
+        if url in tags:
+            print(f"标签: {tags[url]}")
+            
         try:
             # 使用scrape_url方法提取结构化内容
             print(f"提交scrape请求，带有JSON提取选项...")
@@ -94,7 +85,8 @@ def extract_content_from_urls(urls):
                         "data": json_data
                     },
                     "markdown": markdown_content,
-                    "metadata": metadata
+                    "metadata": metadata,
+                    "tag": tags.get(url, "")
                 }
                 
             except Exception as scrape_error:
@@ -116,7 +108,8 @@ def extract_content_from_urls(urls):
                             "data": {}  # 空数据，因为提取失败
                         },
                         "markdown": scrape_result.get("markdown", ""),
-                        "metadata": scrape_result.get("metadata", {})
+                        "metadata": scrape_result.get("metadata", {}),
+                        "tag": tags.get(url, "")
                     }
                 else:
                     raise scrape_error
@@ -125,27 +118,84 @@ def extract_content_from_urls(urls):
             
         except Exception as e:
             results[url] = {
-                "error": str(e)
+                "error": str(e),
+                "tag": tags.get(url, "")
             }
             print(f"处理失败: {str(e)}")
             import traceback
             traceback.print_exc()
         
         print("-" * 50)
+        
+        # 每处理一个URL就保存一次结果
+        save_interim_results(results, results_dir, i+1, len(urls))
+        
+        # 每处理5个URL后暂停一下，避免API限制
+        if (i + 1) % 5 == 0 and i + 1 < len(urls):
+            wait_time = 10
+            print(f"已处理 {i+1} 个URL，暂停 {wait_time} 秒...")
+            time.sleep(wait_time)
     
-    return results
+    # 保存最终结果
+    save_final_results(results, results_dir)
+    
+    return results, results_dir
 
-def save_results(results):
-    """保存结果到文件(JSON和Excel)"""
+def save_interim_results(results, results_dir, current_count, total_count):
+    """每处理一个URL后保存中间结果"""
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    
+    # 保存到Excel文件
+    excel_filename = os.path.join(results_dir, f"firecrawl_interim_results_{current_count}_of_{total_count}.xlsx")
+    
+    # 准备Excel数据
+    excel_data = []
+    for url, data in results.items():
+        row = {
+            "URL": url,
+            "标签": data.get("tag", ""),
+            "处理状态": "成功" if "error" not in data else "失败"
+        }
+        
+        # 添加提取的结构化数据
+        if "extract" in data and "error" not in data:
+            extract_data = data["extract"]
+            if "data" in extract_data:
+                for key, value in extract_data["data"].items():
+                    row[key] = value
+        
+        # 添加错误信息(如果有)
+        if "error" in data:
+            row["错误信息"] = data["error"]
+        
+        # 添加元数据
+        if "metadata" in data:
+            for key, value in data["metadata"].items():
+                row[f"元数据_{key}"] = value
+        
+        # 添加原始markdown的前500个字符作为预览
+        if "markdown" in data:
+            row["Markdown预览"] = data["markdown"][:500] + "..." if len(data["markdown"]) > 500 else data["markdown"]
+        
+        excel_data.append(row)
+    
+    # 创建DataFrame并保存到Excel
+    df = pd.DataFrame(excel_data)
+    df.to_excel(excel_filename, index=False, engine='openpyxl')
+    
+    print(f"已处理 {current_count}/{total_count} 个URL，中间结果已保存到: {excel_filename}")
+
+def save_final_results(results, results_dir):
+    """保存最终结果到文件(JSON和Excel)"""
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     
     # 保存完整结果到JSON
-    full_filename = f"firecrawl_full_results_{timestamp}.json"
+    full_filename = os.path.join(results_dir, f"firecrawl_full_results_{timestamp}.json")
     with open(full_filename, "w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
     
     # 保存提取的内容到单独JSON文件
-    content_filename = f"firecrawl_extracted_content_{timestamp}.json"
+    content_filename = os.path.join(results_dir, f"firecrawl_extracted_content_{timestamp}.json")
     extracted_content = {}
     
     for url, data in results.items():
@@ -156,12 +206,16 @@ def save_results(results):
         json.dump(extracted_content, f, ensure_ascii=False, indent=2)
     
     # 保存到Excel文件
-    excel_filename = f"firecrawl_results_{timestamp}.xlsx"
+    excel_filename = os.path.join(results_dir, f"firecrawl_final_results_{timestamp}.xlsx")
     
     # 准备Excel数据
     excel_data = []
     for url, data in results.items():
-        row = {"URL": url}
+        row = {
+            "URL": url,
+            "标签": data.get("tag", ""),
+            "处理状态": "成功" if "error" not in data else "失败"
+        }
         
         # 添加提取的结构化数据
         if "extract" in data and "error" not in data:
@@ -191,24 +245,23 @@ def save_results(results):
     
     print(f"完整结果已保存到: {full_filename}")
     print(f"提取的内容已保存到: {content_filename}")
-    print(f"Excel格式结果已保存到: {excel_filename}")
+    print(f"最终Excel结果已保存到: {excel_filename}")
 
 # 主函数
 if __name__ == "__main__":
     print("开始使用Firecrawl提取网页内容...")
     
-    # 硬编码URL列表，而不是从文件加载
-    urls = [
-        "https://cj.zhue.com.cn/xingye/2025/0325/398498.html",
-        "https://www.zaobao.com/realtime/world/story20250325-6067441",
-        "http://info.shippingchina.com/bluenews/index/detail/id/225469.html"
-    ]
-    print(f"使用硬编码的 {len(urls)} 个URL")
+    # 从Excel文件加载URL
+    excel_path = "C:\\Python\\github\\firecrawl\\testlink.xlsx"
+    urls, tags = read_urls_from_excel(excel_path)
+    
+    if not urls:
+        print("没有找到有效的URL，程序退出")
+        exit(1)
+    
+    print(f"准备处理 {len(urls)} 个URL")
     
     # 提取内容
-    results = extract_content_from_urls(urls)
+    results, results_dir = extract_content_from_urls(urls, tags)
     
-    # 保存结果
-    save_results(results)
-    
-    print("处理完成!") 
+    print(f"处理完成! 所有结果已保存到 {results_dir} 目录") 
